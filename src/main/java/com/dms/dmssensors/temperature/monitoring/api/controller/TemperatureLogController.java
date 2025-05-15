@@ -1,6 +1,6 @@
 package com.dms.dmssensors.temperature.monitoring.api.controller;
 
-import com.dms.dmssensors.temperature.monitoring.api.model.TemperatureLogOutput;
+import com.dms.dmssensors.temperature.monitoring.api.model.TemperatureLogData;
 import com.dms.dmssensors.temperature.monitoring.domain.model.SensorId;
 import com.dms.dmssensors.temperature.monitoring.domain.repository.TemperatureLogRepository;
 import io.hypersistence.tsid.TSID;
@@ -21,9 +21,9 @@ public class TemperatureLogController {
     private final TemperatureLogRepository temperatureLogRepository;
 
     @GetMapping
-    public Page<TemperatureLogOutput> search(@PathVariable TSID sensorId, @PageableDefault Pageable pageable) {
+    public Page<TemperatureLogData> search(@PathVariable TSID sensorId, @PageableDefault Pageable pageable) {
         return temperatureLogRepository.findAllBySensorId(new SensorId(sensorId), pageable)
-                .map(temperatureLog -> TemperatureLogOutput.builder()
+                .map(temperatureLog -> TemperatureLogData.builder()
                         .id(temperatureLog.getId().getValue())
                         .sensorId(temperatureLog.getSensorId().getValue())
                         .registeredAt(temperatureLog.getRegisteredAt())
