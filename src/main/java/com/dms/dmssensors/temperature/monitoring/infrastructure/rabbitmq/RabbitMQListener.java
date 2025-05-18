@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
-import static com.dms.dmssensors.temperature.monitoring.infrastructure.rabbitmq.RabbitMQConfig.QUEUE_NAME;
+import static com.dms.dmssensors.temperature.monitoring.infrastructure.rabbitmq.RabbitMQConfig.QUEUE_ALERTING;
+import static com.dms.dmssensors.temperature.monitoring.infrastructure.rabbitmq.RabbitMQConfig.QUEUE_PROCESS_TEMPERATURE;
 
 @Slf4j
 @Component
@@ -21,9 +22,18 @@ public class RabbitMQListener {
     private final TemperatureMonitoringService temperatureMonitoringService;
 
     @SneakyThrows
-    @RabbitListener(queues = QUEUE_NAME, concurrency = "2-3")
+    @RabbitListener(queues = QUEUE_PROCESS_TEMPERATURE, concurrency = "2-3")
     public void listenerMonitoring(@Payload TemperatureLogData message) {
         temperatureMonitoringService.processTemperatureReading(message);
+
+        // Simulate processing time
+        Thread.sleep(Duration.ofSeconds(10));
+    }
+
+    @SneakyThrows
+    @RabbitListener(queues = QUEUE_ALERTING, concurrency = "2-3")
+    public void listenerAlerting(@Payload TemperatureLogData message) {
+        log.info("Received alerting: SensorID {} Temp: {}", message.getSensorId(), message.getValue());
 
         // Simulate processing time
         Thread.sleep(Duration.ofSeconds(10));
