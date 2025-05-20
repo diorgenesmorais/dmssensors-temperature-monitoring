@@ -1,6 +1,7 @@
 package com.dms.dmssensors.temperature.monitoring.domain.service;
 
 import com.dms.dmssensors.temperature.monitoring.api.model.TemperatureLogData;
+import com.dms.dmssensors.temperature.monitoring.domain.exceptions.TemperatureProcessException;
 import com.dms.dmssensors.temperature.monitoring.domain.model.SensorId;
 import com.dms.dmssensors.temperature.monitoring.domain.model.SensorMonitoring;
 import com.dms.dmssensors.temperature.monitoring.domain.model.TemperatureLog;
@@ -24,6 +25,11 @@ public class TemperatureMonitoringService {
 
     @Transactional
     public void processTemperatureReading(TemperatureLogData temperatureLogData) {
+        // simula um erro (teste retry)
+        if (temperatureLogData.getValue().equals(10.5)) {
+            throw new TemperatureProcessException("Temperature value cannot be 10.5");
+        }
+
         sensorMonitoringRepository.findById(new SensorId(temperatureLogData.getSensorId()))
                 .ifPresentOrElse(
                         sensorMonitoring -> saveSensorMonitoring(sensorMonitoring, temperatureLogData),
