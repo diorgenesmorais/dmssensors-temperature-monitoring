@@ -14,4 +14,18 @@ public class TemperatureLogData {
     private TSID sensorId;
     private OffsetDateTime registeredAt;
     private Double value;
+
+    public boolean greaterThan(Double threshold) {
+        if (threshold == null) {
+            return false;
+        }
+        return value != null && value.compareTo(threshold) >= 0;
+    }
+
+    public boolean lessThan(Double threshold) {
+        if (threshold == null) {
+            return false;
+        }
+        return value != null && value.compareTo(threshold) <= 0;
+    }
 }
